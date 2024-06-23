@@ -1,0 +1,92 @@
+body {
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  min-height: 100vh; /* This ensures the body takes at least the full height of the viewport */
+  margin: 0; /* Remove default body margin */
+  background: url("https://images.unsplash.com/photo-1502739391963-eda719c24cd4?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  color: white;
+  font-family: "Kode Mono", monospace;
+  font-optical-sizing: auto;
+  height: 100%;
+  font-style: normal;
+  flex-grow: 1;
+}
+
+h1 {
+  letter-spacing: 100px;
+}
+
+/* Header Styles  */
+
+.headerWrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  width: 80%;
+  height: 300px;
+  margin: 50px auto;
+  text-align: center;
+  padding: 20px;
+}
+
+.headerTop {
+  background: url("https://images.unsplash.com/photo-1502739391963-eda719c24cd4?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  border-radius: 25px 25px 0px 0px;
+  background-position-x: center;
+  background-position-y: center;
+  height: 200px;
+}
+
+.headerBottom {
+  background: url("https://images.unsplash.com/photo-1502739391963-eda719c24cd4?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-position-x: top;
+  /* background-position-y: top; */
+  height: 200px;
+  border-radius: 0px 0px 25px 25px;
+}
+
+/* App Styles  */
+
+.appWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  text-align: center;
+  padding: 20px;
+  margin-left: 350px;
+}
+
+.grid1 {
+  height: 500px;
+  overflow: auto;
+}
+
+.grid2 {
+  height: 500px;
+  overflow: auto;
+}
+
+.gridCentered {
+  display: flex;
+  margin-left: 30px;
+  justify-content: center;
+}
+
+.gridContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.footerContent {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+a {
+  color: white;
+}

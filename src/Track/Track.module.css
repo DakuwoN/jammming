@@ -1,0 +1,21 @@
+.trackContainer {
+  display: flex;
+  align-items: center;
+}
+
+.addbutton {
+  display: flex;
+  margin-right: 54px;
+}
+
+button.play {
+  margin-left: 9px;
+}
+
+button.plusSign {
+  margin-right: 10px;
+}
+
+.removebutton {
+  margin-right: 24px;
+}
