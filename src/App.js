@@ -13,9 +13,18 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
 
   useEffect(() => {
+    const getToken = async () => {
+      try {
+        const token = await Spotify.getAccessToken();
+        setAccessToken(token);
+      } catch (error) {
+        console.error("Error getting access token:", error);
+        // Handle the error appropriately
+      }
+    };
+
     if (!accessToken) {
-      const token = Spotify.getAccessToken();
-      setAccessToken(token);
+      getToken();
     }
   }, [accessToken]);
 
@@ -55,48 +64,44 @@ function App() {
   const [results, setResults] = useState([]);
 
   // Function to handle search results
-  const handleSearch = (searchTerm) => {
-    // Your Spotify access token
+  const handleSearch = async (searchTerm) => {
+    try {
+      const token = await Spotify.getAccessToken();
+      setAccessToken(token);
 
-    Spotify.getAccessToken();
-
-    // Fetch search results from Spotify API
-    fetch(`https://api.spotify.com/v1/search?q=${searchTerm}&type=track`, {
-      headers: {
-        Authorization: "Bearer " + accessToken,
-      },
-    })
-      .then(
-        (response) => {
-          // Check if the response is successful
-          if (response.ok) {
-            return response.json();
-          }
-          // Throw an error if the request fails
-          throw new Error("Request failed");
+      const response = await fetch(`https://api.spotify.com/v1/search?q=${searchTerm}&type=track`, {
+        headers: {
+          Authorization: "Bearer " + token,
         },
-        (networkError) => console.log(networkError.message)
-      )
-      .then((jsonResponse) => {
-        // Code to execute after receiving the JSON response
-        if (jsonResponse.tracks) {
-          // Extract track data from the JSON response
-          let trackData = jsonResponse.tracks.items.map((track) => ({
-            id: track.id,
-            name: track.name,
-            artist: track.artists[0].name,
-            album: track.album.name,
-            uri: track.uri,
-            preview: track.preview_url,
-          }));
-
-          // Set the search results state
-          setResults(trackData);
-        } else {
-          // If there are no tracks, set an empty array for results
-          setResults([]);
-        }
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const jsonResponse = await response.json();
+      // Code to execute after receiving the JSON response
+      if (jsonResponse.tracks) {
+        // Extract track data from the JSON response
+        let trackData = jsonResponse.tracks.items.map((track) => ({
+          id: track.id,
+          name: track.name,
+          artist: track.artists[0].name,
+          album: track.album.name,
+          uri: track.uri,
+          preview: track.preview_url,
+        }));
+
+        // Set the search results state
+        setResults(trackData);
+      } else {
+        // If there are no tracks, set an empty array for results
+        setResults([]);
+      }
+    } catch (error) {
+      console.error("Error during search:", error);
+      // Handle the error appropriately
+    }
   };
 
   return (

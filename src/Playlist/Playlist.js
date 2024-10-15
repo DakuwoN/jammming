@@ -12,6 +12,7 @@ function Playlist({
   addTrackToPlaylist,
   removeTrackFromPlaylist,
   clearPlaylist,
+  
 }) {
   // Handles the playlist name change
   function handleChange({ target }) {
@@ -25,26 +26,24 @@ function Playlist({
   };
 
   // Function to handle saving the playlist to Spotify
-  function handleSaveToSpotify() {
-    const trackURIs = getTrackURIs(tracks);
-    // const accessToken = Spotify.getAccessToken();
-    const accessToken = Spotify.getAccessToken();
+  async function handleSaveToSpotify() {
+    try {
+      const trackURIs = getTrackURIs(tracks);
+      const accessToken = await Spotify.getAccessToken();
 
-    // Data for creating the Spotify playlist
-    const playlistData = {
-      name: playlistName,
-      description: "My awesome playlist", // You can customize the description
-      public: true, // Set to true for a public playlist, false for private
-    };
+      // Data for creating the Spotify playlist
+      const playlistData = {
+        name: playlistName,
+        description: "My awesome playlist", // You can customize the description
+        public: true, // Set to true for a public playlist, false for private
+      };
 
-    // Save the playlist to Spotify using the Spotify API
-    Spotify.savePlaylistToSpotify(playlistData, trackURIs, accessToken)
-      .then(() => {
-        clearPlaylist(); // Call the function after saving the playlist to reset the state
-      })
-      .catch((error) => {
-        console.error("Error saving playlist:", error);
-      });
+      // Save the playlist to Spotify using the Spotify API
+      await Spotify.savePlaylistToSpotify(playlistData, trackURIs, accessToken);
+      clearPlaylist(); // Call the function after saving the playlist to reset the state
+    } catch (error) {
+      console.error("Error saving playlist:", error);
+    }
   }
 
   return (

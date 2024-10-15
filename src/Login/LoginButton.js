@@ -7,18 +7,33 @@ function LoginButton() {
   const [accessToken, setAccessToken] = useState("");
 
   useEffect(() => {
-    if (!accessToken) {
-      const token = Spotify.getAccessToken();
-      setAccessToken(token);
-    }
+    const fetchToken = async () => {
+      if (!accessToken) {
+        try {
+          const token = await Spotify.getAccessToken();
+          setAccessToken(token);
+        } catch (error) {
+          console.error("Error fetching access token:", error);
+        }
+      }
+    };
+
+    fetchToken();
   }, [accessToken]);
+
+  const handleLogin = async () => {
+    try {
+      await Spotify.getAccessToken();
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
 
   return (
     <>
-      {/* Button to trigger the Spotify login process */}
       <Button
         className={loginStyles.loginButton}
-        onClick={Spotify.getAccessToken}
+        onClick={handleLogin}
         variant="contained"
       >
         Login with Spotify!

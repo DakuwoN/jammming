@@ -1,40 +1,46 @@
-const clientId = process.env.REACT_APP_CLIENT_ID
-const redirectUri = "https://dakuwon-jammming.netlify.app";
+const clientId = process.env.REACT_APP_CLIENT_ID;
+const redirectUri = process.env.REACT_APP_REDIRECT_URI;
+
+console.log("Environment variables:", process.env);
+console.log("Client ID:", clientId);
+console.log("Redirect URI:", redirectUri);
 
 const Spotify = {
   // Retrieves the access token from the URL or redirects to Spotify login
   getAccessToken() {
-    const storedAccessToken = localStorage.getItem("accessToken");
-    const storedExpirationTime = localStorage.getItem("expirationTime");
+    return new Promise((resolve, reject) => {
+      console.log("Client ID:", clientId);
+      console.log("Redirect URI:", redirectUri);
+      const storedAccessToken = localStorage.getItem("accessToken");
+      const storedExpirationTime = localStorage.getItem("expirationTime");
 
-    // Check if there is a stored and valid access token
-    if (
-      storedAccessToken &&
-      storedExpirationTime &&
-      Date.now() < storedExpirationTime
-    ) {
-      return storedAccessToken;
-    }
+      if (
+        storedAccessToken &&
+        storedExpirationTime &&
+        Date.now() < storedExpirationTime
+      ) {
+        resolve(storedAccessToken);
+        return;
+      }
 
-    const accessTokenMatch = window.location.href.match(/access_token=([^&]*)/);
-    const expiresInMatch = window.location.href.match(/expires_in=([^&]*)/);
+      const accessTokenMatch = window.location.href.match(/access_token=([^&]*)/);
+      const expiresInMatch = window.location.href.match(/expires_in=([^&]*)/);
 
-    if (accessTokenMatch && expiresInMatch) {
-      const accessToken = accessTokenMatch[1];
-      const expiresIn = Number(expiresInMatch[1]);
-      // Set the access token and expiration time in your app
-      this.setAccessToken(accessToken, expiresIn);
-      // Clear parameters from the URL to avoid issues with expired access tokens
-      window.history.pushState("Access Token", null, "/");
-      return accessToken;
-    } else {
-      // Redirect the user to the Spotify login page
-      const accessUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=user-read-private user-read-email playlist-modify-public playlist-modify-private&redirect_uri=${encodeURIComponent(
-        redirectUri
-      )}`;
+      if (accessTokenMatch && expiresInMatch) {
+        const accessToken = accessTokenMatch[1];
+        const expiresIn = Number(expiresInMatch[1]);
+        this.setAccessToken(accessToken, expiresIn);
+        window.history.pushState("Access Token", null, "/");
+        resolve(accessToken);
+      } else {
+        const accessUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=user-read-private user-read-email playlist-modify-public playlist-modify-private&redirect_uri=${encodeURIComponent(
+          redirectUri
+        )}`;
 
-      window.location = accessUrl;
-    }
+        window.location = accessUrl;
+        // Since we're redirecting, we don't resolve or reject here
+      }
+    });
   },
 
   // Sets the access token and its expiration time in your app
@@ -54,7 +60,7 @@ const Spotify = {
   async savePlaylistToSpotify(playlistData, trackURIs, accessToken) {
     try {
       if (!accessToken) {
-        throw new Error("Access token not available or expired.");
+        accessToken = await this.getAccessToken();
       }
 
       // Fetch user data to get the user ID
@@ -88,6 +94,8 @@ const Spotify = {
           body: JSON.stringify(playlistData),
         }
       );
+      console.log("Client ID:", clientId);
+      console.log("Redirect URI:", redirectUri);
 
       // Handle errors in creating the playlist
       if (!playlistResponse.ok) {
@@ -129,6 +137,12 @@ const Spotify = {
       }
     } catch (error) {
       console.error("Error:", error.message);
+      // Add the following lines:
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        console.error("Response headers:", error.response.headers);
+      }
       // Handle the error, but don't call savePlaylistToSpotify again
     }
   },
