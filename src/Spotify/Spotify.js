@@ -6,8 +6,7 @@ const Spotify = {
   // Retrieves the access token from the URL or redirects to Spotify login
   getAccessToken() {
     return new Promise((resolve, reject) => {
-      console.log("Client ID:", clientId);
-      console.log("Redirect URI:", redirectUri);
+     
       const storedAccessToken = localStorage.getItem("accessToken");
       const storedExpirationTime = localStorage.getItem("expirationTime");
 
