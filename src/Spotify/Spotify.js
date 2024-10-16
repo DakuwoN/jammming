@@ -1,9 +1,6 @@
 const clientId = process.env.REACT_APP_CLIENT_ID;
 const redirectUri = process.env.REACT_APP_REDIRECT_URI;
 
-console.log("Environment variables:", process.env);
-console.log("Client ID:", clientId);
-console.log("Redirect URI:", redirectUri);
 
 const Spotify = {
   // Retrieves the access token from the URL or redirects to Spotify login
